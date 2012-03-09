@@ -32,8 +32,8 @@
   </prerequisites>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <scala.version>2.9.1</scala.version>
-    <scala-lib.version>2.9.1</scala-lib.version>
+    <scala.version>2.10.0-M2</scala.version>
+    <scala-lib.version>2.10.0-M2</scala-lib.version>
   </properties>
 
   <!-- Licensing -->
@@ -48,6 +48,16 @@
     <name>fasterxml.com</name>
     <url>http://fasterxml.com</url>
   </organization>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.scala-lang</groupId>
+        <artifactId>scala-library</artifactId>
+        <version>${scala-lib.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <!-- Extends Jackson; supports Scala datatypes, so: -->
@@ -90,8 +100,8 @@
     <dependency>
       <!-- http://www.scalatest.org/download -->
       <groupId>org.scalatest</groupId>
-      <artifactId>scalatest_${scala.version}</artifactId>
-      <version>1.6.1</version>
+      <artifactId>scalatest_${scala-lib.version}</artifactId>
+      <version>1.8-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 

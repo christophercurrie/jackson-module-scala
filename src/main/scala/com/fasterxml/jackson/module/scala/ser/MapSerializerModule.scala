@@ -13,9 +13,9 @@ import com.fasterxml.jackson.databind.`type`.MapLikeType;
 import com.fasterxml.jackson.module.scala.modifiers.MapTypeModifierModule;
 
 private class MapSerializer
-  extends JsonSerializer[Map[_,_]]
+  extends JsonSerializer[Map[Any,Any]]
 {
-  def serialize(value: Map[_, _], jgen: JsonGenerator, provider: SerializerProvider) {
+  def serialize(value: Map[Any,Any], jgen: JsonGenerator, provider: SerializerProvider) {
     jgen.writeStartObject()
     value.foreach { case (k,v) => jgen.writeObjectField(k.toString,v) }
     jgen.writeEndObject()
