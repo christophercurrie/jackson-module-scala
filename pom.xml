@@ -32,8 +32,8 @@
   </prerequisites>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <scala.version>2.10.0-M2</scala.version>
-    <scala-lib.version>2.10.0-M2</scala-lib.version>
+    <scala.version>2.10.0-M3</scala.version>
+    <scala-lib.version>2.10.0-M3</scala-lib.version>
   </properties>
 
   <!-- Licensing -->
@@ -100,8 +100,15 @@
     <dependency>
       <!-- http://www.scalatest.org/download -->
       <groupId>org.scalatest</groupId>
-      <artifactId>scalatest_${scala-lib.version}</artifactId>
+      <artifactId>scalatest_2.10.0-M2</artifactId>
       <version>1.8-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-compiler</artifactId>
+      <version>${scala.version}</version>
       <scope>test</scope>
     </dependency>
 
