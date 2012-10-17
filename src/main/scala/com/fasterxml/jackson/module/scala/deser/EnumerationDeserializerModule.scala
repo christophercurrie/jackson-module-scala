@@ -31,9 +31,9 @@ private object EnumerationDeserializerResolver extends Deserializers.Base {
           beanDesc: BeanDescription) = {
 
 		val clazz = javaType.getRawClass
-		var deserializer : JsonDeserializer[_] = null;
+		var deserializer : JsonDeserializer[_] = null
 
-		if (classOf[scala.Enumeration$Value].isAssignableFrom(clazz)) {
+		if (classOf[scala.Enumeration#Value].isAssignableFrom(clazz)) {
 			deserializer = new EnumerationDeserializer(javaType)
 		}
 

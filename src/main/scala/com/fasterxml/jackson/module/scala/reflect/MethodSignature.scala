@@ -25,7 +25,7 @@ object MethodSignature {
 
   private def getParameterType(param: Symbol) = param.typeSignature.erasure.typeSymbol
 
-  def apply(method: MethodSymbol): MethodSignature = method.params match {
+  def apply(method: MethodSymbol): MethodSignature = method.paramss match {
     case List(params) => new MethodSignature(params.map(getParameterType(_)))
     case _ => new MethodSignature(Nil)
   }

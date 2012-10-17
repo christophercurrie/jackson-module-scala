@@ -28,7 +28,7 @@ class BeanMirror private (private val symbol: ClassSymbol) {
       case symbol: MethodSymbol if symbol.isConstructor => symbol
     }
     findMethod(signature, constructors) match {
-      case Some(constructor: MethodSymbol) => Some(constructor.params.head.apply(paramIndex).name.decoded)
+      case Some(constructor: MethodSymbol) => Some(constructor.paramss.head.apply(paramIndex).name.decoded)
       case None => None
     }
   }
@@ -66,7 +66,7 @@ class BeanMirror private (private val symbol: ClassSymbol) {
       case method: MethodSymbol
         if !method.isSynthetic && method.isPublic &&
           method.returnType.erasure == typeOf[Unit].erasure => method.name.decoded match {
-        case BeanMirror.SetterMethodNamePattern(name) => method.params match {
+        case BeanMirror.SetterMethodNamePattern(name) => method.paramss match {
           case List(List(param)) => Some(BeanProperty.setter(name, param.typeSignature))
           case _ => None
         }
@@ -90,9 +90,9 @@ class BeanMirror private (private val symbol: ClassSymbol) {
 
     val constructors = typ.members.collect {
       case method: MethodSymbol
-        if method.isConstructor && method.isPublic && !method.params.isEmpty && !method.params.head.isEmpty => method
+        if method.isConstructor && method.isPublic && !method.paramss.isEmpty && !method.paramss.head.isEmpty => method
     }
-    constructors.map(constructor => constructor.params.head match {
+    constructors.map(constructor => constructor.paramss.head match {
       case parameters: List[Symbol] if !parameters.isEmpty =>
         getPropertiesFromParameterList(MethodSignature(constructor), 0, parameters)
     }).flatten.map(property => (property.name, property)).toMap
