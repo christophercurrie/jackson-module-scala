@@ -42,13 +42,10 @@ class BeanMirror private (private val symbol: ClassSymbol) {
 
   def hasSetter(propertyName: String, propertyType: Class[_]) = hasProperty(writableProperties, propertyName, propertyType)
 
-  private def mergeProperties(a: Map[String, BeanProperty], b: Map[String, BeanProperty]) = {
-    (a.keySet ++ b.keySet).map(name => (a.get(name), b.get(name)) match {
-      case (Some(a), Some(b)) => BeanProperty.merge(a, b)
-      case (Some(a), None) => a
-      case (None, Some(b)) => b
-    }).map(property => (property.name, property)).toMap
-  }
+  private def mergeProperties(a: Map[String, BeanProperty], b: Map[String, BeanProperty]) =
+    (Map.empty[String,BeanProperty] /: (for (m <- a :: b :: Nil; kv <- m) yield kv)) { (a, kv) =>
+      a + (if (a.contains(kv._1)) kv._1 -> BeanProperty.merge(a(kv._1), kv._2) else kv)
+    }
 
   private def findReadableProperties(beanType: Type): Map[String, BeanProperty] = beanType.members.collect {
     case method: MethodSymbol if method.isPublic && !method.isSynthetic && MethodSignature(method) == MethodSignature() && method.returnType != typeOf[Unit] => method
@@ -119,10 +116,6 @@ object BeanMirror {
 
   def apply(clazz: Class[_]): BeanMirror = {
     val symbol = currentMirror.classSymbol(clazz)
-
-    //TODO: required in scala 2.10.0-M7 to make isCaseClass work (see https://issues.scala-lang.org/browse/SI-6277)
-    // should be removed in later scala releases
-    { symbol.typeSignature }
 
     if (symbol.isCaseClass)
       new BeanMirror(symbol)

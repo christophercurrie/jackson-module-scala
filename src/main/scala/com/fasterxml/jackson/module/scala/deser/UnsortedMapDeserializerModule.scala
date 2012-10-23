@@ -65,7 +65,8 @@ private class UnsortedMapDeserializer(
     if (keyDeser != null && valueDeser != null) this
     else {
       val newKeyDeser = Option(keyDeser).getOrElse(ctxt.findKeyDeserializer(collectionType.getKeyType, property))
-      val newValDeser = Option(valueDeser).getOrElse(ctxt.findContextualValueDeserializer(collectionType.getContentType, property))
+      val newValDeser: JsonDeserializer[_] =
+        Option(valueDeser).getOrElse(ctxt.findContextualValueDeserializer(collectionType.getContentType, property))
       new UnsortedMapDeserializer(collectionType, config, newKeyDeser, newValDeser, valueTypeDeser)
     }
 
