@@ -163,7 +163,9 @@
         <configuration>
           <args>
             <arg>-deprecation</arg>
+            <arg>-feature</arg>
             <arg>-unchecked</arg>
+            <arg>-Xlint</arg>
           </args>
           <charset>UTF-8</charset>
           <doctitle>Jackson Scala Module ${project.version}</doctitle>
