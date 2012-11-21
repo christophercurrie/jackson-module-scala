@@ -16,6 +16,9 @@ import scala.reflect.{ClassTag, NameTransformer}
 import com.fasterxml.jackson.module.scala.reflect.{BeanProperty, BeanMirror}
 import java.lang.annotation.Annotation
 
+import scala.language.implicitConversions
+import scala.language.reflectiveCalls
+
 private object CaseClassBeanSerializerModifier extends BeanSerializerModifier {
   override def changeProperties(config: SerializationConfig,
                                 beanDesc: BeanDescription,

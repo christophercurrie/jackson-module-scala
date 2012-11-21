@@ -13,8 +13,8 @@ private class OptionSerializer(valueSerializer: Option[JsonSerializer[AnyRef]]) 
 
   def serialize(value: Option[_], jgen: JsonGenerator, provider: SerializerProvider) {
     (value, valueSerializer) match {
-      case (Some(v: AnyRef), Some(vs)) => vs.serialize(v, jgen, provider)
-      case (Some(v: AnyRef), _) => provider.defaultSerializeValue(v, jgen)
+      case (Some(v), Some(vs)) => vs.serialize(v.asInstanceOf[AnyRef], jgen, provider)
+      case (Some(v), _) => provider.defaultSerializeValue(v, jgen)
       case (None, _) => provider.defaultSerializeNull(jgen)
     }
   }
