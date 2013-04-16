@@ -32,8 +32,7 @@ case class GenericTestCaseClass[T](data: T)
 
 case class UnicodeNameCaseClass(`winning-id`: Int, name: String)
 
-object CaseClassWithCompanion {
-}
+object CaseClassWithCompanion
 
 case class CaseClassWithCompanion(intValue: Int)
 
@@ -50,6 +49,8 @@ case class NonNullCaseClass1(@JsonInclude(JsonInclude.Include.NON_NULL) foo: Str
 case class NonNullCaseClass2(foo: String)
 
 case class MixedPropertyNameStyleCaseClass(camelCase: Int, snake_case: Int, alllower: Int, ALLUPPER: Int, anID: Int)
+
+case class InnerJavaEnum(fieldType: Field.Type)
 
 @RunWith(classOf[JUnitRunner])
 class CaseClassSerializerTest extends SerializerTest with FlatSpec with ShouldMatchers {
@@ -149,6 +150,11 @@ class CaseClassSerializerTest extends SerializerTest with FlatSpec with ShouldMa
     serialize(CaseClassContainingJsonTypeInfoCaseClass(JsonTypeInfoCaseClass(1))) should (
       equal("""{"c":{"class":"com.fasterxml.jackson.module.scala.ser.JsonTypeInfoCaseClass","intValue":1}}""")
     )
+  }
+
+  it should "serialize a case class containing an inner Java enum" in {
+    val result = serialize(InnerJavaEnum(Field.Type.TYPEA))
+    result should be ("""{"fieldType":"TYPEA"}""")
   }
 
 }
