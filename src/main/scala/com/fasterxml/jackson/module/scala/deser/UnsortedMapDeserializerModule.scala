@@ -9,13 +9,14 @@ import scala.collection.immutable.HashMap
 import com.fasterxml.jackson.core.JsonParser;
 
 import com.fasterxml.jackson.databind._;
-import com.fasterxml.jackson.databind.jsontype.{TypeDeserializer};
+import com.fasterxml.jackson.databind.jsontype.TypeDeserializer
+;
 
 import com.fasterxml.jackson.databind.deser.std.{MapDeserializer, ContainerDeserializerBase};
 import com.fasterxml.jackson.databind.`type`.MapLikeType;
 
-import com.fasterxml.jackson.module.scala.modifiers.MapTypeModifierModule
 import deser.{ContextualDeserializer, Deserializers, ValueInstantiator}
+import com.fasterxml.jackson.module.scala.modifiers.MapTypeModifierModule
 ;
 
 private class MapBuilderWrapper[K,V](val builder: mutable.Builder[(K,V), GenMap[K,V]]) extends AbstractMap[K,V] {

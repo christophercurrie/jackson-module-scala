@@ -9,7 +9,7 @@ import com.fasterxml.jackson.module.scala.util.Implicits._
 object ScalaClassIntrospector extends BasicClassIntrospector {
 
   private def isScalaPackage(pkg: Option[Package]): Boolean =
-    pkg flatMap { _.getName.split("\\.").headOption } map { _ == "scala" } getOrElse false
+    pkg flatMap { _.getName.split("\\.").headOption } exists { _ == "scala" }
 
   private def isMaybeScalaBeanType(cls: Class[_]): Boolean =
     cls.hasSignature && !isScalaPackage(Option(cls.getPackage))
@@ -29,5 +29,5 @@ object ScalaClassIntrospector extends BasicClassIntrospector {
 }
 
 trait ScalaClassIntrospectorModule extends JacksonModule {
-  this += { _.setClassIntrospector(ScalaClassIntrospector) }
+  //this += { _.setClassIntrospector(ScalaClassIntrospector) }
 }

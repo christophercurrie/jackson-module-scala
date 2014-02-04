@@ -1,7 +1,9 @@
 package com.fasterxml.jackson.module.scala;
 
+import com.fasterxml.jackson.module.scala.DefaultScalaModule;
+
 /**
- * @deprecated Use {@link DefaultScalaModule}
+ * @deprecated Use {@link com.fasterxml.jackson.module.scala.DefaultScalaModule}
  */
 @Deprecated
 public class ScalaModule extends DefaultScalaModule

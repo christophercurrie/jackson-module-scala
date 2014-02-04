@@ -25,7 +25,8 @@ class DefaultScalaModule
      with TupleModule
      with MapModule
      with SetModule
-     with ScalaClassIntrospectorModule
+     //with ScalaClassIntrospectorModule
+     with ScalaValueInstantiatorsModule
      with UntypedObjectDeserializerModule
 {
   override def getModuleName = "DefaultScalaModule"

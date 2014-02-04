@@ -10,8 +10,8 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.ser.Serializers;
 import com.fasterxml.jackson.databind.ser.std.{AsArraySerializerBase, CollectionSerializer};
 
-import com.fasterxml.jackson.module.scala.modifiers.IterableTypeModifierModule
 import collection.Iterable
+import com.fasterxml.jackson.module.scala.modifiers.IterableTypeModifierModule
 
 private class IterableSerializer(seqType: Class[_],
                                  elemType: JavaType,

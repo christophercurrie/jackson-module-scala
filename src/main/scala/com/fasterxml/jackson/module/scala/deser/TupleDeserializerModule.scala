@@ -8,9 +8,9 @@ import com.fasterxml.jackson.databind._;
 
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
-import com.fasterxml.jackson.module.scala.JacksonModule
 import deser.{BeanDeserializerFactory, ContextualDeserializer, Deserializers}
 import jsontype.TypeDeserializer
+import com.fasterxml.jackson.module.scala.JacksonModule
 
 private class TupleDeserializer(javaType: JavaType,
                                 config: DeserializationConfig,
