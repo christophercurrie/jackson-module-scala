@@ -1,7 +1,7 @@
 package com.fasterxml.jackson.module.scala
 
 import com.fasterxml.jackson.module.scala.deser.{ScalaStdValueInstantiatorsModule, ScalaValueInstantiatorsModule, UntypedObjectDeserializerModule}
-import com.fasterxml.jackson.module.scala.introspect.ScalaClassIntrospectorModule
+import com.fasterxml.jackson.module.scala.introspect.{ScalaAnnotationIntrospectorModule, ScalaAnnotationIntrospector, ScalaClassIntrospectorModule}
 
 /**
  * Complete module with support for all features.
@@ -26,7 +26,8 @@ class DefaultScalaModule
      with MapModule
      with SetModule
      with ScalaStdValueInstantiatorsModule
-     with ScalaClassIntrospectorModule
+     //with ScalaClassIntrospectorModule
+     with ScalaAnnotationIntrospectorModule
      with UntypedObjectDeserializerModule
 {
   override def getModuleName = "DefaultScalaModule"

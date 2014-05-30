@@ -18,6 +18,7 @@ javacOptions ++= Seq("-source", "1.6", "-target", "1.6")
 scalacOptions += "-target:jvm-1.6"
 
 libraryDependencies ++= Seq(
+    "org.scala-lang" % "scala-reflect" % scalaVersion.value,
     "com.fasterxml.jackson.core" % "jackson-core" % "2.4.0-rc3",
     "com.fasterxml.jackson.core" % "jackson-annotations" % "2.4.0-rc3",
     "com.fasterxml.jackson.core" % "jackson-databind" % "2.4.0-rc3",
@@ -35,3 +36,4 @@ libraryDependencies ++= Seq(
 // resource filtering
 seq(filterSettings: _*)
 
+fork := true

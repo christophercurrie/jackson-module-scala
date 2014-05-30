@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation._
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import scala.beans.BeanProperty
+import com.fasterxml.jackson.core.`type`.TypeReference
 
 case class ConstructorTestCaseClass(intValue: Int, stringValue: String)
 
@@ -94,33 +95,31 @@ class CaseClassSerializerTest extends SerializerTest {
   }
 
   it should "honor Jackson annotations" in {
-    serialize(JacksonAnnotationTestCaseClass("foo","bar")) should (
-      equal("""{"foo":"foo","bar":"bar"}""")
-      )
+    val json = serialize(JacksonAnnotationTestCaseClass("foo","bar"))
+    val map = mapper.readValue[Map[String,String]](json, new TypeReference[Map[String,String]]{})
+    map should contain ("foo" -> "foo")
+    map should contain ("bar" -> "bar")
   }
 
   it should "serialize a case class with ignore property annotations" in {
-    serialize(JacksonIgnorePropertyTestCaseClass("ignore", "test")) should (
-      equal("""{"test":"test"}""")
-      )
+    val json = serialize(JacksonIgnorePropertyTestCaseClass("ignore", "test"))
+    val map = mapper.readValue[Map[String,String]](json, new TypeReference[Map[String,String]]{})
+    map should contain ("test" -> "test")
   }
 
   it should "serialize a case class with unicode name properties" in {
-    serialize(UnicodeNameCaseClass(23, "the name of this")) should (
-      equal("""{"winning-id":23,"name":"the name of this"}""")
-    )
+    val json = serialize(UnicodeNameCaseClass(23, "the name of this"))
+    val map = mapper.readValue[Map[String,Any]](json, new TypeReference[Map[String,Any]]{})
+    map should contain ("winning-id", 23)
+    map should contain ("name", "the name of this")
   }
 
   it should "seralize a generic case class" in {
-    serialize(GenericTestCaseClass(42)) should (
-      equal("""{"data":42}""")
-      )
+    serialize(GenericTestCaseClass(42)) should equal("""{"data":42}""")
   }
 
   it should "serialize a case class with a companion object" in {
-    serialize(CaseClassWithCompanion(42)) should (
-      equal("""{"intValue":42}""")
-      )
+    serialize(CaseClassWithCompanion(42)) should equal("""{"intValue":42}""")
   }
 
   def nonNullMapper: ObjectMapper =
@@ -149,27 +148,23 @@ class CaseClassSerializerTest extends SerializerTest {
   }
 
   it should "serialize a case class with JsonTypeInfo" in {
-    serialize(JsonTypeInfoCaseClass(1)) should (
-      equal("""{"class":"com.fasterxml.jackson.module.scala.ser.JsonTypeInfoCaseClass","intValue":1}""")
-    )
+    serialize(JsonTypeInfoCaseClass(1)) should equal ("""{"class":"com.fasterxml.jackson.module.scala.ser.JsonTypeInfoCaseClass","intValue":1}""")
   }
 
   it should "serialize a case class containing a case class with JsonTypeInfo" in {
-    serialize(CaseClassContainingJsonTypeInfoCaseClass(JsonTypeInfoCaseClass(1))) should (
-      equal("""{"c":{"class":"com.fasterxml.jackson.module.scala.ser.JsonTypeInfoCaseClass","intValue":1}}""")
-    )
+    serialize(CaseClassContainingJsonTypeInfoCaseClass(JsonTypeInfoCaseClass(1))) should equal ("""{"c":{"class":"com.fasterxml.jackson.module.scala.ser.JsonTypeInfoCaseClass","intValue":1}}""")
   }
 
   it should "serialize a non-case class with @BeanProperty annotations" in {
     val bean = new NonCaseWithBeanProperty
     bean.id = 1
     bean.bar = "foo"
-    serialize(bean) should (equal ("""{"id":1,"bar":"foo"}"""))
+    serialize(bean) should equal ("""{"id":1,"bar":"foo"}""")
   }
 
   it should "serialize a nested case class" in {
     val bean = NestedClass("nested")
-    serialize(bean) should (equal ("""{"field":"nested"}"""))
+    serialize(bean) should equal ("""{"field":"nested"}""")
   }
 
   it should "serialize a case class containing an inner Java enum" in {
