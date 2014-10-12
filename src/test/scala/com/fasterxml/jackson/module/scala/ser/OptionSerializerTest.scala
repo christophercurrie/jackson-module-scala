@@ -40,11 +40,14 @@ object OptionSerializerTest
   class BaseHolder(
     private var _base: Option[Base]
   ) {
-    @(JsonTypeInfo @field)(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property="$type")
+    @(JsonTypeInfo)(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property="$type")
     def base = _base
     def base_=(base:Option[Base]) { _base = base }
   }
 
+  case class DefaultOptionSchema(nonOptionValue: String, stringValue: Option[String])
+
+  case class User(name: String, email:Option[String] = None)
 }
 
 @RunWith(classOf[JUnitRunner])
@@ -144,8 +147,6 @@ class OptionSerializerTest extends SerializerTest {
   }
 
   it should "support reversing the default for required properties in schema" in {
-    case class DefaultOptionSchema(nonOptionValue: String, stringValue: Option[String])
-
     val m = mapper
     m.registerModule(new RequiredPropertiesSchemaModule{})
 
@@ -182,7 +183,6 @@ class OptionSerializerTest extends SerializerTest {
   }
 
   it should "support default typing" in {
-    case class User(name: String, email:Option[String] = None)
     val mapper = new ObjectMapper with ScalaObjectMapper
     mapper.registerModule(DefaultScalaModule)
     mapper.enableDefaultTyping()

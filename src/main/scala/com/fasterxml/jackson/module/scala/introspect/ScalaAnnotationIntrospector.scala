@@ -3,7 +3,6 @@ package com.fasterxml.jackson.module.scala.introspect
 import com.fasterxml.jackson.databind.introspect._
 import com.fasterxml.jackson.module.scala.JacksonModule
 import scala.reflect.runtime.{universe => ru}
-import scala.Some
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.PropertyName
 
@@ -97,7 +96,7 @@ object ScalaAnnotationIntrospector extends NopAnnotationIntrospector
     }
 
     val ownerTpe = term.owner.asType.toType
-    val getter = if (term.isParamAccessor) {
+    val getter = if (term.isGetter) {
       term.accessed.asTerm.getter
     } else if (term.isVal || term.isVar) {
       term.getter
@@ -139,14 +138,26 @@ object ScalaAnnotationIntrospector extends NopAnnotationIntrospector
   private def methodPropertyName(member: AnnotatedMethod): Option[String] = {
     val mirror = ru.runtimeMirror(member.getDeclaringClass.getClassLoader)
     val clsSym = mirror.classSymbol(member.getDeclaringClass).asClass
-    val memberSym = clsSym.toType.declaration(ru.newTermName(member.getName))
+    val clsTpe = clsSym.toType
+    val memberSym = clsTpe.declaration(ru.newTermName(member.getName))
     if (memberSym.isMethod) {
       val methodSym = memberSym.asMethod
+      val name = methodSym.name.decoded
       if (methodSym.isGetter) {
-        return Some(methodSym.name.decoded)
+        return Some(name)
       }
       if (methodSym.isSetter) {
         return Some(methodSym.accessed.asTerm.getter.name.decoded)
+      }
+      // "synthetic" getter/setter pairs aren't tagged getter or setter by reflection
+      methodSym.paramss.flatten.length match {
+        case 0 =>
+          if (clsTpe.declaration(ru.newTermName(name + "_$eq")) != ru.NoSymbol)
+            return Some(name)
+        case 1 =>
+          if (name.endsWith("_=")) {
+            return Some(name.stripSuffix("_="))
+          }
       }
     }
     None

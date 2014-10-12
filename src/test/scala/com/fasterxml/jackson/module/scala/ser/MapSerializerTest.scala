@@ -1,11 +1,9 @@
 package com.fasterxml.jackson.module.scala.ser
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
 import scala.collection._
-import JavaConverters._
 import scala.beans.BeanProperty
 import com.fasterxml.jackson.annotation.{JsonSubTypes, JsonTypeInfo, JsonInclude, JsonProperty}
 import com.fasterxml.jackson.annotation.JsonTypeInfo.{As, Id}
@@ -48,19 +46,25 @@ case class KeySerializerMap(
   @(JsonSerialize @getter)(keyUsing = classOf[TupleKeySerializer])
   keySerializerMap: Map[(String,String),Int] )
 
-@JsonTypeInfo(use = Id.NAME, include = As.EXTERNAL_PROPERTY, property = "type")
-@JsonSubTypes(Array(
-  new JsonSubTypes.Type(value = classOf[MapValueDouble], name = "MapValueDouble"),
-  new JsonSubTypes.Type(value = classOf[MapValueString], name = "MapValueString")
-))
-abstract class MapValueBase {}
-case class MapValueDouble(value: Double) extends MapValueBase
-case class MapValueString(value: String) extends MapValueBase
+object MapSerializerTest
+{
+  @JsonTypeInfo(use = Id.NAME, include = As.EXTERNAL_PROPERTY, property = "type")
+  @JsonSubTypes(Array(
+    new JsonSubTypes.Type(value = classOf[MapValueDouble], name = "MapValueDouble"),
+    new JsonSubTypes.Type(value = classOf[MapValueString], name = "MapValueString")
+  ))
+  abstract class MapValueBase {}
+  case class MapValueDouble(value: Double) extends MapValueBase
+  case class MapValueString(value: String) extends MapValueBase
 
+  class MapWrapper(val map: Map[String, MapValueBase])
+
+  class NoneValueWrapper(val map: Map[String,None.type])
+}
 
 @RunWith(classOf[JUnitRunner])
 class MapSerializerTest extends SerializerTest {
-
+  import MapSerializerTest._
   lazy val module = DefaultScalaModule
 
   "MapSerializerModule" should "serialize a map" in {
@@ -107,17 +111,14 @@ class MapSerializerTest extends SerializerTest {
   }
 
   it should "correctly serialize type information" in {
-    val wrapper = new {
-      val map = Map.apply[String, MapValueBase]("Double" -> MapValueDouble(1.0), "String" -> MapValueString("word"))
-      //val map = ImmutableMap.of[String, MapValueBase]("Double", MapValueDouble(1.0), "String", MapValueString("word"))
-    }
+    val wrapper = new MapWrapper(
+      Map.apply[String, MapValueBase]("Double" -> MapValueDouble(1.0), "String" -> MapValueString("word"))
+    )
     serialize(wrapper) should be ("""{"map":{"Double":{"type":"MapValueDouble","value":1.0},"String":{"type":"MapValueString","value":"word"}}}""")
   }
 
   it should "suppress None when WRITE_NULL_MAP_VALUES is active" in {
-    val wrapper = new {
-      val map = Map("key" -> None)
-    }
+    val wrapper = new NoneValueWrapper(Map("key" -> None))
     val m = mapper.copy()
     m.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false)
     val v = m.writeValueAsString(wrapper)
